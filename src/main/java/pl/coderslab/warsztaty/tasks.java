@@ -1,8 +1,15 @@
 package pl.coderslab.warsztaty;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +19,7 @@ public class tasks {
 
     public static final String RESET = "\033[0m";
     public static final String BLUE = "\033[0;34m";
+    public static final String RED = "\u001B[31m";;
 
     public static void main(String[] args) {
 
@@ -20,7 +28,7 @@ public class tasks {
 
         Scanner scanner = new Scanner(System.in);
         String input;
-
+        int removeField;
 
         do {
             System.out.println();
@@ -29,41 +37,80 @@ public class tasks {
             System.out.println();
             switch (input) {
                 case "add":
-                    data = add(data);
+                    String[] inputData = add();
+                    data = ArrayUtils.add(data, inputData);
                     break;
                 case "remove":
-                    System.out.println("choise remove");
+                    removeField = remove(data.length);
+                    data = ArrayUtils.remove(data, removeField);
+                    System.out.println("Value was successfully deleted.");
+
                     break;
                 case "list":
                     list(data);
                     break;
                 case "exit":
-                    System.out.println("choise exit");
-
+                    exit(data);
                     break;
                 default:
                     System.out.println("Wrong word, try again: ");
             }
         } while (!input.equalsIgnoreCase("exit"));
+
     }
 
-    public static String[][] add(String data[][]) {
+    public static void exit (String [][] data) {
+        Path files = Paths.get("./tasks.csv");
+        String[] lines = new String[data.length];
+
+        for (int i = 0; i < data.length ; i++) {
+            lines[i] = String.join(",", data[i]);
+        }
+        try {
+            Files.write(files, Arrays.asList(lines));
+        } catch (IOException e) {
+            System.err.println("Błędna ścieżka");
+        }
+        System.out.println(RED + "Bye Bye" + RESET);
+    }
+
+    public static int remove(int dataLength) {
+        Scanner scanner = new Scanner(System.in);
+        int removeNumber2 = -1;
+
+        System.out.println("Please select number to remove: ");
+
+        String removeNumber = scanner.nextLine();
+        if (NumberUtils.isParsable(removeNumber)) {
+            removeNumber2 = Integer.parseInt(removeNumber);
+        }
+
+        while (!NumberUtils.isParsable(removeNumber)  || (removeNumber2 >= dataLength || 0 > removeNumber2) ) {
+            System.out.println("Incorrect argument passed. Please give number between 0 and " + dataLength);
+            scanner.nextLine();
+        }
+        System.out.println("Your choise " + removeNumber2);
+        return removeNumber2;
+    }
+
+
+    public static String[] add() {
         Scanner scanner2 = new Scanner(System.in);
         String[] inputData = new String[3];
 
         System.out.println("Please add task description:");
-        inputData[0] = scanner2.nextLine();
+        inputData[0] = " " + scanner2.nextLine();
 
         System.out.println("Please add task due date:");
-        inputData[1] = scanner2.nextLine();
+        inputData[1] = " " + scanner2.nextLine();
 
         do {
             System.out.println("Is your task is important: true/false");
-            inputData[2] = scanner2.nextLine();
-        }while (!inputData[2].equals("true") != inputData[2].equals("false"));
+            inputData[2] = " " + scanner2.nextLine();
+        } while (!inputData[2].equals(" true") != inputData[2].equals(" false"));
 
 
-        return data = Arrays.copyOf(data, data.length + 1);
+        return inputData;
     }
 
 
