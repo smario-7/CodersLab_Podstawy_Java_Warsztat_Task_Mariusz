@@ -19,7 +19,8 @@ public class tasks {
 
     public static final String RESET = "\033[0m";
     public static final String BLUE = "\033[0;34m";
-    public static final String RED = "\u001B[31m";;
+    public static final String RED = "\u001B[31m";
+    ;
 
     public static void main(String[] args) {
 
@@ -59,11 +60,12 @@ public class tasks {
 
     }
 
-    public static void exit (String [][] data) {
+
+    public static void exit(String[][] data) {
         Path files = Paths.get("./tasks.csv");
         String[] lines = new String[data.length];
 
-        for (int i = 0; i < data.length ; i++) {
+        for (int i = 0; i < data.length; i++) {
             lines[i] = String.join(",", data[i]);
         }
         try {
@@ -74,25 +76,31 @@ public class tasks {
         System.out.println(RED + "Bye Bye" + RESET);
     }
 
+
     public static int remove(int dataLength) {
         Scanner scanner = new Scanner(System.in);
         int removeNumber2 = -1;
 
-        System.out.println("Please select number to remove: ");
+        System.out.println("Please select number to remove (between 0 and " + (dataLength - 1) + "): ");
 
         String removeNumber = scanner.nextLine();
         if (NumberUtils.isParsable(removeNumber)) {
             removeNumber2 = Integer.parseInt(removeNumber);
         }
 
-        while (!NumberUtils.isParsable(removeNumber)  || (removeNumber2 >= dataLength || 0 > removeNumber2) ) {
-            System.out.println("Incorrect argument passed. Please give number between 0 and " + dataLength);
-            scanner.nextLine();
+        while (!NumberUtils.isParsable(removeNumber) || (removeNumber2 >= dataLength || 0 > removeNumber2)) {
+            System.out.println("Incorrect argument passed. Please give number between 0 and " + (dataLength-1));
+            removeNumber = scanner.nextLine();
+            if (NumberUtils.isParsable(removeNumber)) {
+                removeNumber2 = Integer.parseInt(removeNumber);
+            }
         }
+        removeNumber2 = Integer.parseInt(removeNumber);
         System.out.println("Your choise " + removeNumber2);
         return removeNumber2;
     }
 
+    
 
     public static String[] add() {
         Scanner scanner2 = new Scanner(System.in);
@@ -108,7 +116,6 @@ public class tasks {
             System.out.println("Is your task is important: true/false");
             inputData[2] = " " + scanner2.nextLine();
         } while (!inputData[2].equals(" true") != inputData[2].equals(" false"));
-
 
         return inputData;
     }
